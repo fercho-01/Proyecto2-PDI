@@ -31,4 +31,21 @@ blueMF = medfilt2(b, [40 40]);
 
 %reconstrucción de la imagen
 rgbFixed = cat(3, redMF, greenMF, blueMF);
-figure(2);imshow(rgbFixed);
+figure(2);imshow(rgbFixed);impixelinfo();
+
+%reconstrucción de la imagen
+rgbFixed = cat(3, redMF, greenMF, blueMF);
+figure(2);imshow(rgbFixed);impixelinfo();
+
+%Binarización de la imagen
+redMF(blueMF>230) = 0;
+greenMF(blueMF>230) = 0;
+blueMF(blueMF>230) = 0;
+
+redMF(blueMF ~= 0) = 255;
+greenMF(blueMF ~= 0) = 255;
+blueMF(blueMF ~= 0) = 255;
+
+%reconstrucción de la imagen
+rgbFixed = cat(3, redMF, greenMF, blueMF);
+figure(3);imshow(rgbFixed);impixelinfo();
