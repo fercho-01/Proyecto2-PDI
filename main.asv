@@ -63,14 +63,9 @@ figure(3);imshow(rgbFixed);impixelinfo();
 %    plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 2)
 % end
 
-Rmin = 1;
+Rmin = 5;
 Rmax = 1000;
 [centersBright, radiiBright] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','bright');
-%[centersDark, radiiDark] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','dark');
+[centersDark, radiiDark] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','dark');
 viscircles(centersBright, radiiBright,'Color','b');
 
-% Rmin = 1;
-% Rmax = 10;
-% [centersBright, radiiBright] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','bright');
-% %[centersDark, radiiDark] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','dark');
-% viscircles(centersBright, radiiBright,'Color','b');
