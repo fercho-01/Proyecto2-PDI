@@ -50,6 +50,17 @@ blueMF(blueMF ~= 0) = 255;
 rgbFixed = cat(3, redMF, greenMF, blueMF);
 figure(3);imshow(rgbFixed);impixelinfo();
 
+Ibw = im2bw(rgbFixed);
+Ibw = imfill(Ibw,'holes');
+
+
+Ilabel = bwlabel(Ibw);
+stat = regionprops(Ilabel,'centroid');
+imshow(rgbFixed); hold on;
+for x = 1: numel(stat)
+    plot(stat(x).Centroid(1),stat(x).Centroid(2),'ro');
+end
+
 %A = imread('circlesBrightDark.png');
 %imshow(A)
 
@@ -62,12 +73,12 @@ figure(3);imshow(rgbFixed);impixelinfo();
 %    boundary = B{k};
 %    plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 2)
 % end
-
-Rmin = 1;
-Rmax = 1000;
-[centersBright, radiiBright] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','bright');
-%[centersDark, radiiDark] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','dark');
-viscircles(centersBright, radiiBright,'Color','b');
+% 
+% Rmin = 1;
+% Rmax = 1000;
+% [centersBright, radiiBright] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','bright');
+% %[centersDark, radiiDark] = imfindcircles(rgbFixed,[Rmin Rmax],'ObjectPolarity','dark');
+% viscircles(centersBright, radiiBright,'Color','b');
 
 % Rmin = 1;
 % Rmax = 10;
