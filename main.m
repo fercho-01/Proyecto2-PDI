@@ -61,65 +61,81 @@ figure(3);imshow(rgbFixed);impixelinfo();
 
 %Se crea una copia de la imagen
 rgbFixed2 = rgbFixed;
+buscarCentroides = true;
 
-%Se buscan los centroides de las manchas blancas
-Ibw = im2bw(rgbFixed2);
-Ibw = imfill(Ibw,'holes');
-Ilabel = bwlabel(Ibw);
-stat = regionprops(Ilabel,'centroid','MajorAxisLength','MinorAxisLength');
-centroids = cat(1, stat.Centroid);
-centroids = round(centroids);
+while buscarCentroides
+    %Se buscan los centroides de las manchas blancas
+    Ibw = im2bw(rgbFixed);
+    Ibw = imfill(Ibw,'holes');
+    Ilabel = bwlabel(Ibw);
+    stat = regionprops(Ilabel,'centroid','MajorAxisLength','MinorAxisLength');
+    centroids = cat(1, stat.Centroid);
+    centroids = round(centroids);
 
-indexCentroid =1;
-%Se recorre cada centroide encontrado
-for x = 1: numel(stat)
-    r=5;
-    seguir = true;
-    %Buscar el radio
-    centroidX = centroids(x,1);
-    centroidY = centroids(x,2);
-    pos1X = centroids(x,1); %arriba
-    pos2X = centroids(x,1); %abajo
-    pos1Y = centroids(x,2); %
-    pos2Y = centroids(x,2);
-    while seguir
-        value1 = rgbFixed(centroidY,pos1X);
-        value2 = rgbFixed(centroidY,pos1X);
-        value3 = rgbFixed(pos1Y,centroidX);
-        value4 = rgbFixed(pos2Y,centroidX);
-       if (value1~=0)&&(value2~=0)&&(value3~=0)&&(value4~=0)
-           pos1X = pos1X-1;
-           pos2X = pos2X+1;
-           pos1Y = pos1Y-1;
-           pos2Y = pos2Y+1;
-           if(pos1X<1)||(pos2X>length(rgbFixed))||(pos1Y<1)||(pos2Y>length(rgbFixed))
-              seguir = false; 
-           end
-           
-       else
-           seguir = false;
-       end
-       r = ((pos2X)-(pos1X))/2;
-       if(r==0)
-          r=100; 
-          disp(pos1X);
-          disp(pos2X);
-          disp(pos1Y);
-          disp(pos2Y);
-          disp(centroidX);
-          disp(centroidY);
-          disp(rgbFixed(centroidY,centroidX));
-       end
-       %disp(r);
+    indexCentroid =1;
+    if(centroids>0)
+ 
+        %Se recorre cada centroide encontrado
+        for x = 1: numel(stat)
+            r=5;
+            seguir = true;
+            %Buscar el radio
+            centroidX = centroids(x,1);
+            centroidY = centroids(x,2);
+            pos1X = centroids(x,1); %arriba
+            pos2X = centroids(x,1); %abajo
+            pos1Y = centroids(x,2); %
+            pos2Y = centroids(x,2);
+            while seguir
+                value1 = rgbFixed(centroidY,pos1X);
+                value2 = rgbFixed(centroidY,pos1X);
+                value3 = rgbFixed(pos1Y,centroidX);
+                value4 = rgbFixed(pos2Y,centroidX);
+               if (value1~=0)&&(value2~=0)&&(value3~=0)&&(value4~=0)
+                   pos1X = pos1X-1;
+                   pos2X = pos2X+1;
+                   pos1Y = pos1Y-1;
+                   pos2Y = pos2Y+1;
+                   if(pos1X<1)||(pos2X>length(rgbFixed))||(pos1Y<1)||(pos2Y>length(rgbFixed))
+                      seguir = false; 
+                   end
+
+               else
+                   seguir = false;
+                   figure(5);
+                   imshow(rgbFixed);
+               end
+               r = ((pos2X-1)-(pos1X+1))/2;
+               if(r<=0)
+                  r=1; 
+                  disp(pos1X);
+                  disp(pos2X);
+                  disp(pos1Y);
+                  disp(pos2Y);
+                  disp(centroidX);
+                  disp(centroidY);
+                  disp(rgbFixed(centroidY,centroidX));
+               end
+               %disp(r);
+            end
+            rgbFixed2 = insertShape(rgbFixed2,'circle',[centroidX centroidY r],'LineWidth',10,'Color',{'Red'});
+            for l=1:r
+                rgbFixed = insertShape(rgbFixed,'circle',[centroidX centroidY 0],'LineWidth',(r*2)+4,'Color','Black');
+            end
+            %pause(0.5);
+            figure(4);
+            imshow(rgbFixed2);impixelinfo();
+            %pause;
+        end
+    else
+       buscarCentroides = false; 
     end
-    rgbFixed2 = insertShape(rgbFixed2,'circle',[centroidX centroidY r],'LineWidth',10,'Color',{'Red'});
-    pause(0.5);
-    figure(4);
-    imshow(rgbFixed2);impixelinfo();
-    %pause;
+    
 end
 figure(4);
 imshow(rgbFixed2);impixelinfo();
+figure(5);
+imshow(rgbFixed);
 % 
 % Ibw = im2bw(rgbFixed);
 % Ibw = imfill(Ibw,'holes');
