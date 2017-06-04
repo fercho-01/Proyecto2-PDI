@@ -13,24 +13,17 @@
 %Esta función halla el valor minimo de una matriz
 function [NM,F,C]=minMatrix(M)
     
-    %Se obtine la dimención de la matriz
+    %Se obtinen 
     [tf,tc]=size(M);
-    
-    %Se pone como valor minimo el primer elemento de la matriz
     NM=M(1,1);
     F=1;
     C=1;
-    
-    %Se recorre la matriz
     for i=1:tf
         for j=1:tc
-            
-            %Si el valor de la matriz actual es menor que el almacenado
-            if M(i,j)<NM
-                %Se actualiza el valor minimo
-                NM=M(i,j);
-                F=i;
-                C=j;
-            end
+        if M(i,j)<NM
+            NM=M(i,j);
+            F=i;
+            C=j;
+        end
     end
 end 
