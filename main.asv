@@ -1,5 +1,5 @@
 %----------------------------------
-%   Tarea 2, Main
+%   Tarea 3, Main
 %   Por:
 %       - Luis Fernando Orozco (lfernando.orozco@udea.edu.co)
 %         Estudiante de Ingeniería de Sistemas, Udea
@@ -19,6 +19,7 @@ b = imread('mascara3.jpg');
 %original
 b(b>0)=255;
 a(b==255)=0;
+
 
 %recortar la imagen original
 [fil,col] = find(rgb2gray(a)>0);
@@ -40,24 +41,85 @@ redMF = medfilt2(r, [40 40]);
 greenMF = medfilt2(g, [40 40]);
 blueMF = medfilt2(b, [40 40]);
 
-%reconstrucción de la imagen
+
+
+%Binarización de la imagen
+ redMF(blueMF>230) = 0;
+ greenMF(blueMF>230) = 0;
+ blueMF(blueMF>230) = 0;
+
+ redMF(blueMF ~= 0) = 255;
+ greenMF(blueMF ~= 0) = 255;
+ blueMF(blueMF ~= 0) = 255;
+
+ %reconstrucción de la imagen
 rgbFixed = cat(3, redMF, greenMF, blueMF);
+rgbFixed2 = rgbFixed;
 figure(2);imshow(rgbFixed);impixelinfo();
+seguir=true;
+j = 1;
 
-rgbFixed = rgb2gray(rgbFixed);
-rgbFixed(rgbFixed>0)=1;
+%Pintar circulos en cada mancha
+while seguir
+    imagen = im2bw(rgbFixed);
+    
+    %Indentificar cuantas manchas blancas hay en la imagen
+    [manchas cantidad] = bwlabel(imagen);
+    
+    if(cantidad>0)
+        for i=1:cantidad
+            %Esto se ejecuta por cada mancha blanca de la imagen
+            
+            %Se separa la mancha para esta iteración
+            mancha1 = imagen;
+            mancha1(manchas~=i)=0;
+            mancha1(mancha1>0)=1;
 
+            %Se inserta circulo en la imagen
+            [rgbFixed,rgbFixed2,radio] = insertarCirculo(mancha1,rgbFixed,rgbFixed2);
+            
+            %Se almacena el radio del circulo insertado
+            radios(j) = radio;
+            radios(2,j) = j;
+            j=j+1;
+             
+            figure(5);imshow(rgbFixed);
+            
+        end
+    else
+       seguir=false; 
+    end
+    
+    user_entry = input('prompt','s');
+    if(user_entry~='y')
+        seguir=false;
+    end
+end
+figure(4);imshow(rgbFixed2);impixelinfo();
+figure(5);imshow(rgbFixed);
 
-b = bwdist(
+radios2 = sort(radios);
+figure(10);
+h = histogram(radios2,373);
+
+% distancia = bwdist(~mancha1);
 % 
-% %Binarización de la imagen
-% redMF(blueMF>230) = 0;
-% greenMF(blueMF>230) = 0;
-% blueMF(blueMF>230) = 0;
 % 
-% redMF(blueMF ~= 0) = 255;
-% greenMF(blueMF ~= 0) = 255;
-% blueMF(blueMF ~= 0) = 255;
+% [posy posx] = find(distancia==(maxMatrix(distancia)));
+% r = maxMatrix(distancia);
+% %r=10;
+% %img = insertShape(rgbFixed,'circle',[150 280 35],'LineWidth',5);
+% %figure, imshow(img);
+% 
+% RGB = insertShape(rgbFixed,'circle',[posx posy r+1],'LineWidth',5,'Color','Red');
+% rgbFixed2 = insertShape(rgbFixed2,'FilledCircle',[posx posy r+1],'LineWidth',5,'Color','Black');
+% rgbFixed2(rgbFixed2==102) = 0;
+% imshow(RGB);
+% figure(4);imshow(rgbFixed2);impixelinfo();
+
+
+%b = bwdist(~rgFixed);
+% 
 % 
 % 
 % %reconstrucción de la imagen
